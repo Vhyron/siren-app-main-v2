@@ -26,6 +26,7 @@ export default function ReportDetail() {
           const reportSnapshot = await get(reportRef);
 
           if (reportSnapshot.exists()) {
+            console.log(reportSnapshot.val());
             setReport(reportSnapshot.val());
           } else {
             console.error('Report not found');

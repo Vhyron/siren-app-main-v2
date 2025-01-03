@@ -4,9 +4,10 @@
     "slug": "siren-app-main-v2",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/app/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "scheme": "siren",
     "splash": {
       "image": "./assets/images/app/splash.png",
       "resizeMode": "contain",
