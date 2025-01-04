@@ -26,7 +26,12 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.laden8210.sirenappmainv2"
+      "package": "com.laden8210.sirenappmainv2",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyC70wVtKNui5s8L3xKPevA_NE8pYuh9XDk"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

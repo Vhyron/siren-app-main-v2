@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import React from 'react';
-import MI from 'react-native-vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
 import Container from '@/components/Container';
 import AlertCard from '@/components/AlertCard';
