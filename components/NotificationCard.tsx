@@ -52,8 +52,7 @@ const styles = ScaledSheet.create({
   },
   contentContainer: {
     width: "80%",
-    justifyContent: "center",
-    alignItems: "center",
+ 
   },
   circleIndicator: {
     width: "10@s",
