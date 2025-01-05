@@ -34,18 +34,18 @@ const newsAlertCard = ({
 }: Props) => {
   return (
     <View style={[styles.cardContainer, { width }]}>
-      <Pressable style={styles.button}>
+      {/* <Pressable style={styles.button}>
         <Text style={styles.seeMore}>View More ➤</Text>
         <View style={styles.accidentViews}>
           <MI name="group" size={20} color={'#0B0C63'} />
           <Text style={styles.viewText}>{viewString}</Text>
         </View>
-      </Pressable>
+      </Pressable> */}
       <View style={styles.cardMoreInfo}>
         <Text style={styles.accidentName}>{title}</Text>
         <Text style={styles.accidentDetails}>{detailsString}</Text>
         <Text style={styles.accidentDate}>{dateString}</Text>
-        <Text style={styles.accidentDate}>{timeAgo}</Text>
+        {/* <Text style={styles.accidentDate}>{timeAgo}</Text> */}
       </View>
     </View>
   );
