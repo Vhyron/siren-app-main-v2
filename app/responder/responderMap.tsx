@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { db, auth } from "@/firebaseConfig";
-import { ref, onValue, update, onDisconnect } from "firebase/database";
+import { ref, onValue, update, onDisconnect, push } from "firebase/database";
 import * as Location from "expo-location";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Modalize } from "react-native-modalize";
@@ -116,24 +116,72 @@ const ResponderMap = () => {
     return () => unsubscribe();
   }, []);
 
-  const confirmStatus = () => {
+  // const confirmStatus = () => {
+  //   if (!selectedReport || !responderLocation || !responderId) {
+  //     console.error("Invalid state for confirming status");
+  //     return;
+  //   }
+  //   const reportRef = ref(db, `reports/${selectedReport.reportId}`);
+  //   update(reportRef, {
+  //     status: "Accepted",
+  //     responderId: responderId,
+  //   })
+  //     .then(() => {
+  //       console.log("Report accepted");
+  //       updateResponderLocation(responderId, responderLocation);
+  //       resetSelectedReport();
+  //     })
+  //     .catch((error: Error) => {
+  //       console.error("Error updating status:", error.message);
+  //     });
+
+  //   onClose();
+  // };
+  const confirmStatus = async () => {
     if (!selectedReport || !responderLocation || !responderId) {
       console.error("Invalid state for confirming status");
       return;
     }
+
     const reportRef = ref(db, `reports/${selectedReport.reportId}`);
-    update(reportRef, {
-      status: "Accepted",
-      responderId: responderId,
-    })
-      .then(() => {
-        console.log("Report accepted");
-        updateResponderLocation(responderId, responderLocation);
-        resetSelectedReport();
-      })
-      .catch((error: Error) => {
-        console.error("Error updating status:", error.message);
+
+    try {
+      // Update report status and responderId in the database
+      await update(reportRef, {
+        status: "Accepted",
+        responderId: responderId,
       });
+      console.log("Report accepted");
+
+      // Update responder's location
+      updateResponderLocation(responderId, responderLocation);
+
+      // Reset the selected report
+      resetSelectedReport();
+
+      // Create and push the notification to the user's notification collection
+      const notificationRef = ref(
+        db,
+        `notifications/accept/${selectedReport.senderId}`
+      );
+      const notificationData = {
+        type: "EMERGENCY_RESPONSE",
+        message: `A responder has accepted your ${selectedReport.category} report.`,
+        senderId: responderId,
+        reportId: selectedReport.reportId, // Use the correct reportId here
+        status: "Accepted", // Adjust if necessary
+        // createdAt: serverTimestamp(),
+        timestamp: selectedReport.timestamp,
+        read: false,
+      };
+
+      await push(notificationRef, notificationData);
+      console.log("Notification sent");
+    } catch (error) {
+      console.error("Error confirming status:", error.message);
+    }
+
+    // Close the modal (or any other closing operation you might have)
     onClose();
   };
 
@@ -307,37 +355,20 @@ const ResponderMap = () => {
             } else if (report.status === "Reviewed") {
               markerColor = "orange"; // Reviewed
             }
-            const reportLocation = report.location || {
-              latitude: null,
-              longitude: null,
-            };
-            const { latitude, longitude } = reportLocation;
-
-            console.log(`Report ${index} Location:`, { latitude, longitude });
-
-            if (latitude == null || longitude == null) {
-              console.warn(
-                `Skipping Marker for Report ${index} due to invalid coordinates`
-              );
-              return null;
-            }
 
             return (
               <Marker
                 key={index}
-                coordinate={{
-                  latitude: latitude,
-                  longitude: longitude,
-                }}
+                coordinate={report.location}
                 title={report.senderName}
                 description={report.category}
-                onPress={(e) => {
+                onPress={(e: any) => {
                   e.persist();
                   handleMarkerPress(report);
                 }}
                 zIndex={markerColor === "red" ? 2000 : 1000}
-                pinColor={markerColor}
               >
+                <Entypo name="location-pin" size={50} color={markerColor} />
               </Marker>
             );
           })}

@@ -243,9 +243,12 @@ const WaitingResponder: React.FC = () => {
               coordinate={report.location}
               title={report.senderName}
               description={report.category}
-              onPress={() => handleMarkerPress(report)} // Pass the report data
-              pinColor={markerColor}
-            ></Marker>
+              onPress={() => handleMarkerPress(report)}
+              zIndex={markerColor === "red" ? 2000 : 1000}
+              // Pass the report data
+            >
+              <Entypo name="location-pin" size={50} color={markerColor} />
+            </Marker>
           );
         })}
         {responderLocation && (

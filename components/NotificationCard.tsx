@@ -20,7 +20,7 @@ export default function NotificationCard({ image, name, desc, time, href, read =
         <Image source={image} style={styles.image} />
         <View>
           <Text style={styles.name}>{name}</Text>
-          <Text style={styles.desc} numberOfLines={1}>
+          <Text style={styles.desc}>
             {desc}
           </Text>
         </View>
@@ -57,19 +57,20 @@ const styles = ScaledSheet.create({
   image: {
     width: '40@s',
     height: '40@s',
-    marginHorizontal: '10@s',
     borderRadius: 999,
   },
   name: {
     fontSize: '16@s',
     fontFamily: 'BeVietnamProBold',
     color: '#016ea6',
+    flexWrap: 'wrap',
   },
   desc: {
     fontSize: '12@s',
     color: '#b0adad',
-    width: '60%',
+    width: '100%',
     fontFamily: 'BeVietnamProRegular',
+    flexWrap: 'wrap',
   },
   time: {
     position: 'absolute',
