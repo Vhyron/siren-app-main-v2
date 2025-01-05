@@ -40,15 +40,22 @@ export default function Notifications() {
       });
     });
   };
-
   const handleNotificationClick = async (notif) => {
     try {
+      // Fetch the current user's ID
       const currentUser = await AsyncStorage.getItem("userId");
       if (!currentUser) {
         console.error("Current user ID not found");
         return;
       }
 
+      // Validate the notification has a roomId
+      if (!notif.roomId) {
+        console.error("Notification does not contain a valid room ID");
+        return;
+      }
+
+      // Fetch the room details from Firebase
       const roomRef = ref(db, `rooms/${notif.roomId}`);
       const roomSnapshot = await get(roomRef);
 
@@ -57,13 +64,15 @@ export default function Notifications() {
         return;
       }
 
+      // Determine the selected user's ID
       const roomData = roomSnapshot.val();
       const selectedId =
         roomData.user1 === currentUser ? roomData.user2 : roomData.user1;
 
+      // Navigate to the chat room with params
       router.push({
         pathname: "/app/user/messages/chat",
-        params: { roomId: notif.roomId, selectedId: selectedId },
+        params: { roomId: notif.roomId, selectedId },
       });
     } catch (error) {
       console.error("Error handling notification click:", error);
@@ -152,7 +161,7 @@ export default function Notifications() {
           <Text style={styles.headerText}>Notifications</Text>
           <Text style={styles.notifText}>
             <Text style={styles.notifColor}>
-              You have {unreadCount} unread notifications today.
+              You have {unreadCount} notifications today.
             </Text>
           </Text>
         </View>
@@ -166,13 +175,13 @@ export default function Notifications() {
           {notifications.map((notif) => (
             <NotificationCard
               key={notif.id}
-              href="#"
+              href="#" // Optional, if not needed remove
               image={require("@/assets/images/profile.png")} // Replace with actual image if available
-              name={notif.name} // Replace with sender's name if available
-              desc={notif.message}
+              name={notif.name || "Unknown"} // Replace with sender's name if available
+              desc={notif.message || "No description"} // Fallback for missing message
               time={formatNotificationTime(notif.createdAt)}
               read={notif.read}
-              onPress={() => handleNotificationClick(notif)}
+              onPress={() => handleNotificationClick(notif)} // Call your function here
             />
           ))}
         </View>

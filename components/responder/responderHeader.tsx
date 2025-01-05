@@ -87,11 +87,9 @@ const ResponderHeader = ({ user }: Props) => {
     <View style={styles.container}>
       <CallNotification />
 
-      {/* Left Side: Burger Menu */}
       <Pressable onPress={toggleMenu}>
         <MaterialCommunityIcons name="menu" size={30} color="#8F8E8D" />
       </Pressable>
-      {/* Right Side: Notifications & Profile */}
       <View style={styles.rightSide}>
         <Pressable
           onPress={() => router.push("/responder/profile/notifications")}
@@ -99,7 +97,7 @@ const ResponderHeader = ({ user }: Props) => {
           <View style={styles.iconContainer}>
             <MaterialCommunityIcons name="bell" size={32} color="#016ea6" />
             <View style={styles.redDot} />
-          </View>{" "}
+          </View>
         </Pressable>
         <Pressable onPress={() => router.push("/responder/profile")}>
           <Image

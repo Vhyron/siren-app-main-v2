@@ -10,6 +10,7 @@ interface Props {
   time: string;
   href: Href;
   read?: boolean;
+  onPress: () => void; // Define onPress as a function
 }
 
 export default function NotificationCard({
@@ -19,6 +20,7 @@ export default function NotificationCard({
   time,
   href,
   read = false,
+  onPress,
 }: Props) {
   return (
     <Link href={href} asChild>
@@ -52,7 +54,6 @@ const styles = ScaledSheet.create({
   },
   contentContainer: {
     width: "80%",
- 
   },
   circleIndicator: {
     width: "10@s",

@@ -10,7 +10,14 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { db, auth } from "@/firebaseConfig";
-import { ref, onValue, update, onDisconnect, push, get } from "firebase/database";
+import {
+  ref,
+  onValue,
+  update,
+  onDisconnect,
+  push,
+  get,
+} from "firebase/database";
 import * as Location from "expo-location";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Modalize } from "react-native-modalize";
@@ -24,6 +31,7 @@ import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import Entypo from "@expo/vector-icons/Entypo";
 import Loading from "@/components/app/Loading";
+import ImageModal from "react-native-image-modal";
 
 export interface Report {
   reportId: string;
@@ -151,7 +159,8 @@ const ResponderMap = () => {
     }
 
     const responderData = userSnapshot.val();
-    const responderName = responderData.firstname + " " + responderData.lastname;
+    const responderName =
+      responderData.firstname + " " + responderData.lastname;
 
     const reportRef = ref(db, `reports/${selectedReport.reportId}`);
 
@@ -507,14 +516,15 @@ const ResponderMap = () => {
                   <View style={styles.imageContainer}>
                     {selectedReport?.assets &&
                       selectedReport.assets.map((item: any, idx: number) => (
-                        <Image
+                        <ImageModal
+                          key={idx}
                           source={
                             item
                               ? { uri: item.url }
                               : require("@/assets/images/policeman.png")
                           }
                           style={styles.image}
-                          key={idx}
+                          resizeMode="cover" // Ensures the image scales correctly
                         />
                       ))}
                   </View>

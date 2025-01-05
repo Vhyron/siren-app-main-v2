@@ -138,17 +138,14 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
     <View style={styles.container}>
       <CallNotification />
 
-      {/* Left Side: Burger Menu */}
       <Pressable onPress={toggleMenu}>
         <MaterialCommunityIcons name="menu" size={30} color="#8F8E8D" />
       </Pressable>
       <Pressable onPress={() => handlePress("/user/profile/notifications")}>
         <View style={styles.iconContainer}>
-          {/* Notification Icon */}
           <Ionicons name="notifications" size={30} color="#016ea6" />
-          {/* Red Dot for New Notifications */}
           <View style={styles.redDot} />
-        </View>{" "}
+        </View>
       </Pressable>
       <Animated.View
         style={[
