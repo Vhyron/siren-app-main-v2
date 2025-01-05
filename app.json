@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "siren-app-main-v2",
-    "slug": "siren-app-main-v2",
+    "slug": "siren-app-v2-zywt-fksavuk1iuwzd",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/app/icon.png",
@@ -59,7 +59,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "3ca3d544-461b-47e6-80d7-5527ef9f671a"
+        "projectId": "89afae2f-a2fa-4087-a52e-eba447b30dbe"
       }
     }
   }

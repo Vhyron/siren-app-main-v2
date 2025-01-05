@@ -26,22 +26,18 @@ const Dashboard = () => {
   const nearbyAccidents = [
     {
       id: '1',
-      title: 'Truck and Jeep Accident',
-      dateString: '24 Feb 2024',
-      timeAgo: '2m ago',
-      viewsString: '560',
+      title: 'Kanlaon Volcano restiveness',
+      dateString: 'January 5, 2025',
       detailsString:
-        'On November 20, 2024, severe flooding struck the Northern Province after three days of torrential rain. Rivers overflowed, submerging villages and cutting off roads, leaving over 50,000 residents stranded. Emergency services reported 15 fatalities and over 200 injuries.',
+        'MANILA, Philippines — The Philippine Institute of Volcanology and Seismology raised the status of Kanlaon Volcano on Negros Island to Alert Level 3 after its explosive eruption on December 9.',
     },
     {
       id: '2',
-      title: 'Fire Alert',
-      dateString: '24 Feb 2024',
-      timeAgo: '25m ago',
-      viewsString: '568',
+      title: 'Amihan',
+      dateString: 'January 5, 2025',
       detailsString:
-        'On November 20, 2024, severe flooding struck the Northern Province after three days of torrential rain. Rivers overflowed, submerging villages and cutting off roads, leaving over 50,000 residents stranded. Emergency services reported 15 fatalities and over 200 injuries.',
-    },
+        'MANILA, Philippines — Two weather systems on Sunday, January 5, may bring rain showers to Luzon, the state weather bureau PAGASA said.',
+    }
   ];
 
   if (loading) return <Loading />;

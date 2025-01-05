@@ -1,7 +1,7 @@
 import HeaderText from '@/components/app/HeaderText';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   Text,
@@ -17,68 +17,36 @@ import { ScaledSheet } from 'react-native-size-matters';
 
 const newsData = [
   {
-    source: 'CNN-NEWS',
-    title: "Biden's approval rating hits new low",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec urna.',
-    image_url: 'https://picsum.photos/id/0/367/267',
-    url: 'https://picsum.photos/id/0/367/267',
+    source: 'PhilStar',
+    title: 'LIVE updates: Kanlaon Volcano restiveness',
+    description: 'MANILA, Philippines — The Philippine Institute of Volcanology and Seismology raised the status of Kanlaon Volcano on Negros Island to Alert Level 3 after its explosive eruption on December 9.',
+    image_url: 'https://media.philstar.com/photos/2024/12/15/kanlaon-december-14-2024_2024-12-15_16-49-49.jpg',
+    url: 'https://www.philstar.com/headlines/2025/01/05/2412036/live-updates-kanlaon-volcano-restiveness',
     categories: ['general'],
   },
   {
-    source: 'ABS-CBN',
-    title: "Biden's approval rating hits new low2",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec urna.',
-    image_url: 'https://picsum.photos/id/2/367/267',
-    url: 'https://picsum.photos/id/2/367/267',
+    source: 'PhilStar',
+    title: '2 Pinays among dead in Hawaii fireworks blast',
+    description: 'MANILA, Philippines — Two of the three people who reportedly died in a New Year\'s Eve fireworks explosion in Honolulu, Hawaii were Filipina siblings.',
+    image_url: 'https://media.philstar.com/photos/2025/01/04/2_2025-01-04_22-00-24.jpg',
+    url: 'https://www.philstar.com/headlines/2025/01/05/2411969/2-pinays-among-dead-hawaii-fireworks-blast',
     categories: ['general'],
   },
   {
-    source: 'GMA',
-    title: "Biden's approval rating hits new low3",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec urna.',
-    image_url: 'https://picsum.photos/id/7/367/267',
-    url: 'https://picsum.photos/id/7/367/267',
+    source: 'PhilStar',
+    title: '\'Amihan\', shear line, to bring rains to parts of Luzon',
+    description: 'MANILA, Philippines — Two weather systems on Sunday, January 5, may bring rain showers to Luzon, the state weather bureau PAGASA said.',
+    image_url: 'https://media.philstar.com/photos/2024/12/26/rain_2024-12-26_23-40-19.jpg',
+    url: 'https://www.philstar.com/headlines/weather/2025/01/05/2412022/amihan-shear-line-bring-rains-parts-luzon',
     categories: ['general'],
   },
 ];
 
 const itemWidth = Dimensions.get('screen').width * 0.9;
 
-var requestOptions = {
-  method: 'GET',
-};
-
-var params = {
-  api_token: 'ddDiL34ChLUzeQMakkLdkmr2iIOU2dkfXsTUOEy5', // Replace with your valid API token
-  categories: 'health,travel,general',
-  limit: '3',
-  language: 'en',
-};
-
-var esc = encodeURIComponent;
-var query = Object.keys(params)
-  .map(function (k) {
-    // @ts-ignore
-    return esc(k) + '=' + esc(params[k]);
-  })
-  .join('&');
-
 export default function News() {
-  const [news, setNews] = useState<any>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const router = useRouter();
-
-  useEffect(() => {
-    fetch('https://api.thenewsapi.com/v1/news/all?' + query, requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((result) => setNews(result.data))
-      .catch((error) => console.error('Error:', error));
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -88,7 +56,7 @@ export default function News() {
           horizontal
           snapToAlignment={'start'}
           snapToInterval={itemWidth}
-          data={news || newsData}
+          data={newsData}
           initialScrollIndex={0}
           contentContainerStyle={styles.contentContainer}
           getItemLayout={(data, index) => ({
@@ -117,7 +85,7 @@ export default function News() {
                     <View style={styles.textContainer}>
                       <Text style={styles.newsOutlet}>{item.source}</Text>
                       <Text style={styles.newsDesc} numberOfLines={2}>
-                        {item.source}
+                        {item.description}
                       </Text>
                     </View>
                   </ImageBackground>
@@ -133,7 +101,7 @@ export default function News() {
         <Text style={styles.headerText}>Recommendations</Text>
         <View style={styles.cardContainer}>
           <FlatList
-            data={news || newsData}
+            data={newsData}
             keyExtractor={(item) => item.title}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => router.push(item.url)} activeOpacity={0.9}>
