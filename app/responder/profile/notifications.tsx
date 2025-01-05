@@ -134,10 +134,10 @@ export default function Notifications() {
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>Notifications</Text>
           <Text style={styles.notifText}>
-            You have{" "}
+            You have
             <Text style={styles.notifColor}>
               {unreadCount} unread notifications
-            </Text>{" "}
+            </Text>
             today.
           </Text>
         </View>
@@ -161,7 +161,7 @@ export default function Notifications() {
               name={notif.name || "Unknown User"}
               desc={notif.message}
               time={formatNotificationTime(notif.createdAt)}
-              read
+              read={notif.read}
               isEmergency={notif.type === "Emergency Report"}
               onPress={() => handleNotificationClick(notif)}
             />

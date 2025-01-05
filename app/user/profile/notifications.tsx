@@ -151,8 +151,8 @@ export default function Notifications() {
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>Notifications</Text>
           <Text style={styles.notifText}>
-            You have{" "}
-            <Text style={styles.notifColor}>{unreadCount} notifications</Text>{" "}
+            You have
+            <Text style={styles.notifColor}>{unreadCount} notifications</Text>
             today.
           </Text>
         </View>
@@ -168,10 +168,10 @@ export default function Notifications() {
               key={notif.id}
               href="#"
               image={require("@/assets/images/profile.png")} // Replace with actual image if available
-              name={notif.senderId} // Replace with sender's name if available
+              name={notif.name} // Replace with sender's name if available
               desc={notif.message}
               time={formatNotificationTime(notif.createdAt)}
-              read
+              read={notif.read}
               onPress={() => handleNotificationClick(notif)}
             />
           ))}
