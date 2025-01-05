@@ -151,9 +151,9 @@ export default function Notifications() {
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>Notifications</Text>
           <Text style={styles.notifText}>
-            You have
-            <Text style={styles.notifColor}>{unreadCount} notifications</Text>
-            today.
+            <Text style={styles.notifColor}>
+              You have {unreadCount} unread notifications today.
+            </Text>
           </Text>
         </View>
       </View>

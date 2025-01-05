@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { db, auth } from "@/firebaseConfig";
-import { ref, onValue, update, onDisconnect, push } from "firebase/database";
+import { ref, onValue, update, onDisconnect, push, get } from "firebase/database";
 import * as Location from "expo-location";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Modalize } from "react-native-modalize";
@@ -142,6 +142,16 @@ const ResponderMap = () => {
       console.error("Invalid state for confirming status");
       return;
     }
+    const userRef = ref(db, `users/${responderId}`);
+    const userSnapshot = await get(userRef);
+
+    if (!userSnapshot.exists()) {
+      console.error("User data not found");
+      return;
+    }
+
+    const responderData = userSnapshot.val();
+    const responderName = responderData.firstname + " " + responderData.lastname;
 
     const reportRef = ref(db, `reports/${selectedReport.reportId}`);
 
@@ -171,8 +181,9 @@ const ResponderMap = () => {
         reportId: selectedReport.reportId, // Use the correct reportId here
         status: "Accepted", // Adjust if necessary
         // createdAt: serverTimestamp(),
-        timestamp: selectedReport.timestamp,
+        createdAt: selectedReport.timestamp,
         read: false,
+        name: responderName,
       };
 
       await push(notificationRef, notificationData);
