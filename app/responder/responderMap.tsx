@@ -301,13 +301,24 @@ const ResponderMap = () => {
           )}
 
           {reports.map((report, index) => {
-            const reportLocation = report.location || { latitude: null, longitude: null };
+            let markerColor = "red";
+            if (report.status === "Accepted") {
+              markerColor = "green"; // Accepted
+            } else if (report.status === "Reviewed") {
+              markerColor = "orange"; // Reviewed
+            }
+            const reportLocation = report.location || {
+              latitude: null,
+              longitude: null,
+            };
             const { latitude, longitude } = reportLocation;
 
             console.log(`Report ${index} Location:`, { latitude, longitude });
 
             if (latitude == null || longitude == null) {
-              console.warn(`Skipping Marker for Report ${index} due to invalid coordinates`);
+              console.warn(
+                `Skipping Marker for Report ${index} due to invalid coordinates`
+              );
               return null;
             }
 
@@ -324,8 +335,9 @@ const ResponderMap = () => {
                   e.persist();
                   handleMarkerPress(report);
                 }}
+                zIndex={markerColor === "red" ? 2000 : 1000}
+                pinColor={markerColor}
               >
-                <Entypo name="location-pin" size={60} color="red" />
               </Marker>
             );
           })}

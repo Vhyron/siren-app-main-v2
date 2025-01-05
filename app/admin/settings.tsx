@@ -17,13 +17,13 @@ export default function Settings() {
       <HeaderText text="Settings" />
       <ScrollView style={styles.settingsContainer} showsVerticalScrollIndicator={false}>
         <Text style={styles.settingHeader}>Emergency Preparedness</Text>
-        <TouchableOpacity style={styles.settingButton} onPress={() => router.push('/admin/notifications')}>
+        {/* <TouchableOpacity style={styles.settingButton} onPress={() => router.push('/admin/notifications')}>
           <View style={styles.settingContent}>
             <MaterialCommunityIcons name="bell" size={24} color="#b6b6b7" />
             <Text style={styles.settingText}>Notifications</Text>
           </View>
           <Ionicons name="chevron-forward" size={24} color="#b6b6b7" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={styles.settingButton} onPress={() => router.push('/admin/map')}>
           <View style={styles.settingContent}>
             <MaterialCommunityIcons name="map-outline" size={24} color="#b6b6b7" />
@@ -31,14 +31,14 @@ export default function Settings() {
           </View>
           <Ionicons name="chevron-forward" size={24} color="#b6b6b7" />
         </TouchableOpacity>
-        <Text style={styles.settingHeader}>Notifications</Text>
+        {/* <Text style={styles.settingHeader}>Notifications</Text>
         <TouchableOpacity style={styles.settingButton} onPress={() => router.push('/admin/notifications')}>
           <View style={styles.settingContent}>
             <MaterialCommunityIcons name="bell" size={24} color="#b6b6b7" />
             <Text style={styles.settingText}>Notification Management</Text>
           </View>
           <Ionicons name="chevron-forward" size={24} color="#b6b6b7" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Text style={styles.settingHeader}>Location</Text>
         <TouchableOpacity
           style={styles.settingButton}

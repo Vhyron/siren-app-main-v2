@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -11,20 +11,23 @@ import {
   Platform,
   StatusBar as STATUSBAR,
   Dimensions,
-} from 'react-native';
-import MapView, { Marker, LatLng } from 'react-native-maps';
-import { db, auth } from '@/firebaseConfig';
-import { ref, get, onValue } from 'firebase/database';
-import { useRouter } from 'expo-router';
-import { mapStyle } from '@/constants/Map';
-import { StatusBar } from 'expo-status-bar';
-import { LinearGradient } from 'expo-linear-gradient';
-import Loading from '@/components/app/Loading';
-import { Report } from '../responder/responderMap';
-import Entypo from '@expo/vector-icons/Entypo';
+} from "react-native";
+import MapView, { Marker, LatLng } from "react-native-maps";
+import { db, auth } from "@/firebaseConfig";
+import { ref, get, onValue } from "firebase/database";
+import { useRouter } from "expo-router";
+import { mapStyle } from "@/constants/Map";
+import { StatusBar } from "expo-status-bar";
+import { LinearGradient } from "expo-linear-gradient";
+import Loading from "@/components/app/Loading";
+import { Report } from "../responder/responderMap";
+import Entypo from "@expo/vector-icons/Entypo";
 
 const WaitingResponder: React.FC = () => {
-  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [reports, setReports] = useState<any[]>([]);
   const router = useRouter();
@@ -38,7 +41,7 @@ const WaitingResponder: React.FC = () => {
   const fetchProfileData = async () => {
     try {
       const userId = auth.currentUser?.uid;
-      if (!userId) throw new Error('No user ID found');
+      if (!userId) throw new Error("No user ID found");
 
       const userRef = ref(db, `users/${userId}`);
       const snapshot = await get(userRef);
@@ -46,10 +49,10 @@ const WaitingResponder: React.FC = () => {
       if (snapshot.exists()) {
         setProfileData(snapshot.val());
       } else {
-        console.log('No profile data available');
+        console.log("No profile data available");
       }
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error("Error fetching user data:", error);
     }
   };
 
@@ -58,7 +61,7 @@ const WaitingResponder: React.FC = () => {
     const fetchUserReports = async () => {
       try {
         const userId = auth.currentUser?.uid;
-        if (!userId) throw new Error('No user ID found');
+        if (!userId) throw new Error("No user ID found");
 
         const reportsRef = ref(db, `reports`);
         const snapshot = await get(reportsRef);
@@ -70,13 +73,15 @@ const WaitingResponder: React.FC = () => {
           );
           setReports(matchingReports);
           if (matchingReports.length > 0) {
-            const latestReport: Report = matchingReports.reduce((latest, current) => {
-              return current.timestamp > latest.timestamp ? current : latest;
-            });
+            const latestReport: Report = matchingReports.reduce(
+              (latest, current) => {
+                return current.timestamp > latest.timestamp ? current : latest;
+              }
+            );
             setLocation(latestReport?.location || null);
 
             // Set up live responder tracking if status is "Accepted"
-            if (latestReport.status === 'Accepted') {
+            if (latestReport.status === "Accepted") {
               const responderId = latestReport.responderId; // Replace with actual responder ID
               const responderRef = ref(db, `responders/${responderId}`);
               const unsubscribeResponder = onValue(responderRef, (snapshot) => {
@@ -96,13 +101,13 @@ const WaitingResponder: React.FC = () => {
               };
             }
           } else {
-            console.error('No matching reports found for this user');
+            console.error("No matching reports found for this user");
           }
         } else {
-          console.error('No reports found in database');
+          console.error("No reports found in database");
         }
       } catch (error) {
-        console.error('Error fetching reports:', error);
+        console.error("Error fetching reports:", error);
       } finally {
         setLoading(false);
       }
@@ -120,7 +125,7 @@ const WaitingResponder: React.FC = () => {
   //   }, 300000);
   // };
   const handleNotYet = () => {
-    console.log('Not Yet clicked, restarting timer');
+    console.log("Not Yet clicked, restarting timer");
     setModalVisible(false); // Hide the modal
     // startTimer(); // Restart the timer
   };
@@ -168,32 +173,47 @@ const WaitingResponder: React.FC = () => {
     );
   }
 
-  const currentReport = reports.length > 0 ? reports[0] : null;
-
+  const currentReport =
+    reports.length > 0
+      ? reports.find((report) => report.status === "Reported") || reports[0]
+      : null;
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#e6e6e6', 'rgba(0, 0, 255, 0)']} style={styles.gradient} />
+      <LinearGradient
+        colors={["#e6e6e6", "rgba(0, 0, 255, 0)"]}
+        style={styles.gradient}
+      />
       <View style={styles.headers}>
         <View style={styles.indexTopBar}>
           <View style={styles.topBarLeft}>
-            <Image source={require('@/assets/images/profile.png')} style={styles.topBarImage} />
+            <Image
+              source={require("@/assets/images/profile.png")}
+              style={styles.topBarImage}
+            />
             <View>
-              <Text style={styles.topBarName}>{profileData?.username || 'Unknown User'}</Text>
+              <Text style={styles.topBarName}>
+                {profileData?.username || "Unknown User"}
+              </Text>
               <Text style={styles.topBarLink}>0912309123</Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7}>
-            <Image source={require('@/assets/images/close_btn.png')} style={styles.closeBtn} />
+            <Image
+              source={require("@/assets/images/close_btn.png")}
+              style={styles.closeBtn}
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.bigTextContainer}>
           <Text style={styles.bigText}>
-            {currentReport.status === 'Reported' ? 'Waiting for Responder' : 'Responder on the Way'}
+            {currentReport.status === "Reported"
+              ? "Waiting for Responder"
+              : "Responder on the Way"}
           </Text>
           <Text style={styles.smallText}>
-            {currentReport.status === 'Reported'
-              ? 'Your contact persons nearby, ambulance/police contacts will see your request for help.'
-              : 'A responder is en route to your location. Please stay safe.'}
+            {currentReport.status === "Reported"
+              ? "Your contact persons nearby, ambulance/police contacts will see your request for help."
+              : "A responder is en route to your location. Please stay safe."}
           </Text>
         </View>
       </View>
@@ -210,11 +230,11 @@ const WaitingResponder: React.FC = () => {
       >
         {/* User's Report Locations */}
         {reports.map((report, index) => {
-          let markerColor = 'red';
-          if (report.status === 'Accepted') {
-            markerColor = 'green'; // Accepted
-          } else if (report.status === 'Reviewed') {
-            markerColor = 'orange'; // Reviewed
+          let markerColor = "red";
+          if (report.status === "Accepted") {
+            markerColor = "green"; // Accepted
+          } else if (report.status === "Reviewed") {
+            markerColor = "orange"; // Reviewed
           }
 
           return (
@@ -224,9 +244,8 @@ const WaitingResponder: React.FC = () => {
               title={report.senderName}
               description={report.category}
               onPress={() => handleMarkerPress(report)} // Pass the report data
-            >
-              <Entypo name="location-pin" size={60} color={markerColor} />
-            </Marker>
+              pinColor={markerColor}
+            ></Marker>
           );
         })}
         {responderLocation && (
@@ -256,10 +275,12 @@ const WaitingResponder: React.FC = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             {selectedReport ? (
-              selectedReport.status === 'Reviewed' ? (
+              selectedReport.status === "Reviewed" ? (
                 // If status is "Reviewed"
                 <>
-                  <Text style={styles.modalText}>This report has already been reviewed.</Text>
+                  <Text style={styles.modalText}>
+                    This report has already been reviewed.
+                  </Text>
                   <Pressable
                     style={[styles.closeModalButton, styles.modalButton]}
                     onPress={() => {
@@ -274,13 +295,16 @@ const WaitingResponder: React.FC = () => {
                 // If status is not "Reviewed"
                 <>
                   <Text style={styles.modalText}>
-                    Do you want to review the report from {selectedReport.senderName}?
+                    Do you want to review the report from{" "}
+                    {selectedReport.senderName}?
                   </Text>
                   <Text style={styles.modalDetails}>
-                    <Text style={{ fontWeight: 'bold' }}>Category:</Text> {selectedReport.category}
+                    <Text style={{ fontWeight: "bold" }}>Category:</Text>{" "}
+                    {selectedReport.category}
                   </Text>
                   <Text style={styles.modalDetails}>
-                    <Text style={{ fontWeight: 'bold' }}>Description:</Text> {selectedReport.details || 'N/A'}
+                    <Text style={{ fontWeight: "bold" }}>Description:</Text>{" "}
+                    {selectedReport.details || "N/A"}
                   </Text>
                   <View style={styles.modalButtons}>
                     <Pressable
@@ -297,7 +321,7 @@ const WaitingResponder: React.FC = () => {
                       onPress={() => {
                         setModalVisible(false);
                         if (selectedReport) {
-                          router.push('/user/response_review'); // Navigate to the review page
+                          router.push("/user/response_review"); // Navigate to the review page
                         }
                         setSelectedReport(null); // Clear selected report
                       }}
@@ -320,30 +344,30 @@ export default WaitingResponder;
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
+    height: "100%",
   },
   header: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     marginTop: 10,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     height: 100,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
     zIndex: 11,
-    backgroundColor: '#e6e6e6',
+    backgroundColor: "#e6e6e6",
   },
   leftSide: {
-    flexDirection: 'row',
+    flexDirection: "row",
     columnGap: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   closeButton: {
     top: 40,
     right: 20,
   },
   leftText: {
-    flexDirection: 'column',
+    flexDirection: "column",
     top: 40,
     left: 30,
   },
@@ -352,20 +376,20 @@ const styles = StyleSheet.create({
   police: {
     top: 40,
     left: 20,
-    resizeMode: 'stretch',
+    resizeMode: "stretch",
     height: 40,
     width: 40,
     borderRadius: 20,
   },
   mainText: {
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
     zIndex: 10,
-    height: '60%',
-    display: 'flex',
-    width: '100%',
+    height: "60%",
+    display: "flex",
+    width: "100%",
     flex: 1,
   },
   map: {
@@ -373,88 +397,88 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   modalContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    alignItems: "center",
+    justifyContent: "flex-end",
     bottom: 10,
   },
   modalContent: {
     width: 300,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 10,
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalText: {
     fontSize: 18,
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalDetails: {
     fontSize: 14,
-    fontFamily: 'BeVietnamProRegular',
-    color: '#333',
+    fontFamily: "BeVietnamProRegular",
+    color: "#333",
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
   },
   closeModalButton: {
-    backgroundColor: '#E75B65',
+    backgroundColor: "#E75B65",
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     paddingVertical: 10,
     borderRadius: 5,
-    width: '45%',
-    alignItems: 'center',
+    width: "45%",
+    alignItems: "center",
   },
   buttonTextClose: {
     fontSize: 16,
-    fontFamily: 'BeVietnamProRegular',
-    color: '#fff',
+    fontFamily: "BeVietnamProRegular",
+    color: "#fff",
   },
   indexTopBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   topBarLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 5,
   },
   topBarImage: {
     width: 45,
     height: 45,
     borderWidth: 1,
-    borderColor: '#e6e6e6',
+    borderColor: "#e6e6e6",
     borderRadius: 999,
   },
   topBarName: {
-    fontFamily: 'BeVietnamProRegular',
+    fontFamily: "BeVietnamProRegular",
     fontSize: 12,
-    color: '#343434',
+    color: "#343434",
   },
   topBarLink: {
-    fontFamily: 'BeVietnamProRegular',
+    fontFamily: "BeVietnamProRegular",
     fontSize: 12,
-    color: '#3998ff',
+    color: "#3998ff",
   },
   headers: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     zIndex: 1000,
-    marginTop: Platform.OS == 'android' ? STATUSBAR.currentHeight : 0,
+    marginTop: Platform.OS == "android" ? STATUSBAR.currentHeight : 0,
     paddingHorizontal: 20,
   },
   closeBtn: {
@@ -463,57 +487,57 @@ const styles = StyleSheet.create({
   },
   bigTextContainer: {
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     gap: 5,
     marginTop: 5,
   },
   bigText: {
     fontSize: 20,
-    fontFamily: 'BeVietnamProMedium',
-    color: '#0b0c63',
+    fontFamily: "BeVietnamProMedium",
+    color: "#0b0c63",
   },
   smallText: {
     fontSize: 12,
-    fontFamily: 'BeVietnamProRegular',
-    color: '#231f20',
-    textAlign: 'center',
+    fontFamily: "BeVietnamProRegular",
+    color: "#231f20",
+    textAlign: "center",
   },
   gradient: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     zIndex: 1000,
-    width: Dimensions.get('window').width,
+    width: Dimensions.get("window").width,
     height: 200,
   },
   modalButton: {
     paddingVertical: 10,
     borderRadius: 5,
-    width: '45%',
-    alignItems: 'center',
+    width: "45%",
+    alignItems: "center",
   },
   confirmModalButtons: {
-    backgroundColor: '#fff', // Green for Yes
+    backgroundColor: "#fff", // Green for Yes
     borderWidth: 1,
-    borderColor: '#0c0c63',
+    borderColor: "#0c0c63",
   },
   declineModalButtons: {
-    backgroundColor: '#fff', // Green for Yes
+    backgroundColor: "#fff", // Green for Yes
     borderWidth: 1,
-    borderColor: '#F44336',
+    borderColor: "#F44336",
   },
   buttonTextYes: {
     fontSize: 16,
-    fontFamily: 'BeVietnamProRegular',
-    color: '#0c0c63',
-    fontWeight: 'bold',
+    fontFamily: "BeVietnamProRegular",
+    color: "#0c0c63",
+    fontWeight: "bold",
   },
   buttonTextNo: {
     fontSize: 16,
-    fontFamily: 'BeVietnamProRegular',
-    color: '#F44336',
-    fontWeight: 'bold',
+    fontFamily: "BeVietnamProRegular",
+    color: "#F44336",
+    fontWeight: "bold",
   },
 });
