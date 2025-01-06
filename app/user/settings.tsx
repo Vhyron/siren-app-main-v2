@@ -62,7 +62,6 @@ export default function Settings() {
         <Text style={styles.settingText}>Feedback</Text>
         <Text style={styles.settingHeader}>About</Text>
         <Text style={styles.settingText}>Version 1.0.0</Text>
-        <Text style={styles.settingText}>Developed by: cognito.</Text>
       </ScrollView>
       <StatusBar style="dark" />
     </SafeAreaView>

@@ -65,7 +65,7 @@ const AdminHeader: React.FC<HeaderProps> = ({ bg = '#e6e6e6' }) => {
       {/* Right Side: Notifications & Profile */}
       <View style={styles.rightSide}>
         <Pressable>
-          <Image source={require('@/assets/images/profile-logo.png')} style={styles.police} />
+          <Image source={require('@/assets/images/profile_placeholder.png')} style={styles.police} />
         </Pressable>
       </View>
 
@@ -79,7 +79,7 @@ const AdminHeader: React.FC<HeaderProps> = ({ bg = '#e6e6e6' }) => {
           </TouchableOpacity>
           <View style={styles.burgerProfile}>
             <Pressable>
-              <Image source={require('@/assets/images/profile-logo.png')} style={styles.sliderNavImage} />
+              <Image source={require('@/assets/images/profile_placeholder.png')} style={styles.sliderNavImage} />
             </Pressable>
             <Text style={styles.burgerName}>Admin</Text>
           </View>
@@ -151,10 +151,10 @@ const styles = ScaledSheet.create({
     alignItems: 'center',
   },
   police: {
-    resizeMode: 'cover',
-    height: '40@s',
-    width: '40@s',
-    borderRadius: '20@s',
+    resizeMode: 'contain',
+    height: '30@s',
+    width: '30@s',
+    
   },
   burgerProfile: {
     height: '250@s',
@@ -206,10 +206,9 @@ const styles = ScaledSheet.create({
   
   },
   sliderNavImage: {
-    resizeMode: 'cover',
-    width: '125@s',
-    height: '125@s',
-    borderRadius: 999,
+    resizeMode: 'contain',
+    width: '100@s',
+    height: '100@s',
   },
   closeButton: {
     position: 'absolute',
