@@ -30,69 +30,70 @@ interface CallType {
 const CallNotification = () => {
   const router = useRouter();
   const currentUserId = getAuth().currentUser?.uid;
-
+  
+  // Add loading states
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [callData, setCallData] = useState<({ roomId: string } & CallType) | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Early return if no currentUserId
+    if (!currentUserId) {
+      console.warn('No user ID found');
+      return;
+    }
+
     const callsRef = ref(db, 'calls');
 
-    // Listen for any changes in the calls collection
     const unsubscribe = onValue(callsRef, (snapshot) => {
       const calls = snapshot.val();
-      if (calls) {
-        // Loop through the calls to check if there's a new call for the current user
-        for (let roomId in calls) {
-          const call = calls[roomId];
-
-          console.log('CallNotification Data: ', call);
-
-          // TODO
-          // can improve logic of notif to only appear when status is initiated or when notify is true
-
-          // Check if the current user is the receiver
-          if (call.receiver.id === currentUserId && call.notify && call.status !== 'ongoing') {
-            console.log('CALLING!');
-            setCallData({ ...call, roomId });
-            setIsModalVisible(true);
-            Vibration.vibrate(3000, true);
-            return;
-          }
-        }
-      } else {
-        // Hide modal if no calls exist
+      if (!calls) {
         setIsModalVisible(false);
+        return;
       }
+
+      Object.entries(calls).forEach(([roomId, call]) => {
+        const typedCall = call as CallType;
+        
+        if (
+          typedCall.receiver?.id === currentUserId && 
+          typedCall.notify && 
+          typedCall.status !== 'ongoing'
+        ) {
+          setCallData({ ...typedCall, roomId });
+          setIsModalVisible(true);
+          Vibration.vibrate(3000, true);
+        }
+      });
     });
 
     return () => {
       unsubscribe();
+      Vibration.cancel();
     };
   }, [currentUserId]);
 
   const handleAccept = async () => {
+    if (!callData?.roomId || !currentUserId) return;
+    
     setLoading(true);
     Vibration.cancel();
 
     try {
-      let updates: any = {};
-      updates[`calls/${callData?.roomId}/status`] = 'ongoing';
-      updates[`calls/${callData?.roomId}/notify`] = false;
-
-      await update(ref(db), updates);
-
-      console.log(callData);
+      await update(ref(db), {
+        [`calls/${callData.roomId}/status`]: 'ongoing',
+        [`calls/${callData.roomId}/notify`]: false
+      });
 
       router.replace({
         pathname: '/user/call/Receiver',
         params: {
-          roomId: callData?.roomId,
+          roomId: callData.roomId,
           currentUserId,
-          callerId: callData?.caller.id,
-          callerName: callData?.caller.name,
-          isResponder: callData?.toResponder ? 'true' : 'false', // used string because boolean don't work
-        },
+          callerId: callData.caller.id,
+          callerName: callData.caller.name,
+          isResponder: callData.toResponder ? 'true' : 'false'
+        }
       });
     } catch (error) {
       console.error('Error accepting call:', error);
@@ -103,16 +104,16 @@ const CallNotification = () => {
   };
 
   const handleDecline = async () => {
+    if (!callData?.roomId) return;
+
     setIsModalVisible(false);
     setCallData(null);
-
     Vibration.cancel();
 
     try {
-      const callRef = ref(db, `calls/${callData?.roomId}`);
-      await remove(callRef);
+      await remove(ref(db, `calls/${callData.roomId}`));
     } catch (error) {
-      console.error('Handle Decline Error: ', error);
+      console.error('Handle Decline Error:', error);
     }
   };
 

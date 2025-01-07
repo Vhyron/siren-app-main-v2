@@ -161,7 +161,7 @@ export default function Notifications() {
           <Text style={styles.headerText}>Notifications</Text>
           <Text style={styles.notifText}>
             <Text style={styles.notifColor}>
-              You have {unreadCount} notifications today.
+              You have {unreadCount} notification{unreadCount > 1 ? 's' : ''} today.
             </Text>
           </Text>
         </View>
